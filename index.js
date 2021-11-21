@@ -200,6 +200,7 @@ window.addEventListener("load", () => {
 
         clearAll() {
             this.lines = [];
+            this.history = [];
             this.renderCanvas();
         }
     };
