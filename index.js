@@ -5,6 +5,7 @@ window.addEventListener("load", () => {
         constructor(controls) {
             this.controls = controls;
             this.dataFormat = "2";
+            this.roundPoints = true;
 
             this.thickness = 16;
             this.color = "#000000";
@@ -138,8 +139,8 @@ window.addEventListener("load", () => {
             if (!last || !last.points) return;
 
             const point = {
-                x: Math.round(Math.min(Math.max(last.thickness * 0.5, e.x), this.width - last.thickness * 0.5)),
-                y: Math.round(Math.min(Math.max(last.thickness * 0.5, e.y), this.height - last.thickness * 0.5))
+                x: Math.min(Math.max(last.thickness * 0.5, e.x), this.width - last.thickness * 0.5),
+                y: Math.min(Math.max(last.thickness * 0.5, e.y), this.height - last.thickness * 0.5)
             };
             last.points.push(point);
             this.renderCanvas();
@@ -167,7 +168,7 @@ window.addEventListener("load", () => {
 
         exportLines() {
             return this.lines.map(l => Object.assign(Object.assign({}, l), {
-                points: this.createPointData(l.points)
+                points: this.createPointData(l.points.map(e => this.roundPoints ? { x: Math.round(e.x), y: Math.round(e.y) } : e))
             }));
         }
 
@@ -189,11 +190,12 @@ window.addEventListener("load", () => {
             this.ctx.lineJoin = "round";
             this.ctx.beginPath();
             line.points.forEach((p, i) => {
+                const v = this.roundPoints ? { x: Math.round(p.x), y: Math.round(p.y) } : p;
                 if (!i) {
                     this.ctx.beginPath();
-                    this.ctx.moveTo(p.x * this.scale, p.y * this.scale);
+                    this.ctx.moveTo(v.x * this.scale, v.y * this.scale);
                 }
-                this.ctx.lineTo(p.x * this.scale, p.y * this.scale);
+                this.ctx.lineTo(v.x * this.scale, v.y * this.scale);
             });
             this.ctx.stroke();
         }
@@ -271,6 +273,12 @@ window.addEventListener("load", () => {
             this.dataFormat.addEventListener("input", () => {
                 this.canvas.dataFormat = this.dataFormat.value;
                 this.canvas.updateOutput();
+            });
+
+            this.roundPoints = document.querySelector("#input-roundpoints");
+            this.roundPoints.addEventListener("input", () => {
+                this.canvas.roundPoints = this.roundPoints.checked;
+                this.canvas.renderCanvas();
             });
 
             this.updateButtons();

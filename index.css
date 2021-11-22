@@ -94,6 +94,10 @@ input:not([type=range]), select {
     margin: 0 20px 0 5px;
 }
 
+input[type=checkbox] {
+    margin: 5px 10px 5px 0;
+}
+
 input[type=number] {
     width: 60px;
     border: 0;
