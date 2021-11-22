@@ -25,6 +25,8 @@ body {
 .wrapper>.column-output {
     flex: 0 0 40%;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 @media only screen and (max-width: 900px) {
@@ -34,8 +36,6 @@ body {
 }
 
 .data-output {
-    width: 100%;
-    height: 100%;
     resize: none;
     border: 0;
     outline: 0;
@@ -44,6 +44,13 @@ body {
     font-family: monospace;
     padding: 10px;
     border-radius: 8px;
+    flex-grow: 1;
+}
+
+.output-controls {
+    padding: 10px;
+    padding-top: 5px;
+    flex-shrink: 0;
 }
 
 .wrapper>.column-canvas {
@@ -78,16 +85,16 @@ body {
     padding: 5px 0;
 }
 
-.canvas-controls label {
+label {
     color: #fff;
     font-weight: 700;
 }
 
-.canvas-controls input:not([type=range]) {
+input:not([type=range]), select {
     margin: 0 20px 0 5px;
 }
 
-.canvas-controls input[type=number] {
+input[type=number] {
     width: 60px;
     border: 0;
     outline: 0;

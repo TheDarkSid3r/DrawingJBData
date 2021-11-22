@@ -4,6 +4,7 @@ window.addEventListener("load", () => {
     const Canvas = class {
         constructor(controls) {
             this.controls = controls;
+            this.dataFormat = "2";
 
             this.thickness = 16;
             this.color = "#000000";
@@ -155,15 +156,28 @@ window.addEventListener("load", () => {
             this.controls.updateButtons();
         }
 
+        createPointData(points) {
+            switch (this.dataFormat) {
+                case "1":
+                    return points;
+                case "2":
+                    return points.map(p => `${p.x},${p.y}`).join("|");
+            }
+        }
+
         exportLines() {
             return this.lines.map(l => Object.assign(Object.assign({}, l), {
-                points: l.points.map(p => `${p.x},${p.y}`).join("|")
+                points: this.createPointData(l.points)
             }));
         }
 
         renderCanvas() {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.lines.forEach(this.drawLine.bind(this));
+            this.updateOutput();
+        }
+
+        updateOutput() {
             outputArea.value = this.lines.length ? JSON.stringify(this.exportLines()) : "";
         }
 
@@ -252,6 +266,12 @@ window.addEventListener("load", () => {
             this.thicknessInput = document.querySelector("#input-thickness");
             this.thicknessSlider.addEventListener("input", () => this.updateThickness(this.thicknessSlider.value));
             this.thicknessInput.addEventListener("input", () => this.updateThickness(this.thicknessInput.value));
+
+            this.dataFormat = document.querySelector("#input-dataformat");
+            this.dataFormat.addEventListener("input", () => {
+                this.canvas.dataFormat = this.dataFormat.value;
+                this.canvas.updateOutput();
+            });
 
             this.updateButtons();
         }
